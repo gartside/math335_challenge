@@ -32,7 +32,7 @@ getNameTibble <- function(x) names_year %>% filter(name==x) %>% select(c(year, T
 james_data <- getNameTibble("James")
 james_data %>% ggplot(aes(year, Total)) + geom_point() + labs(title="Frequency of children named James by year", x="Year", y="Yearly total") + geom_vline(xintercept=1964, linetype='dashed', color='blue') + annotate("text", x = 1969, y = 0, label = "1964", color = "blue")
 ```
-I was born in the year 1964, in which there were `r format(james1964[[1]], nsmall=1)` children born with the name James. It looks like the name James was most popular around 1950, but that might be due to the baby boom after World War II, and not because the name James was more popular around that time period. To check this, we should look at the proportion of the children named James each year instead of the frequency for each year.
+I was born in the year 1964, in which there were `r format(james_data[james_data$year == 1964, ]$Total, nsmall=1)` children born with the name James. It looks like the name James was most popular around 1950, but that might be due to the baby boom after World War II, and not because the name James was more popular around that time period. To check this, we should look at the proportion of the children named James each year instead of the frequency for each year.
 
 To calculate the proportions, we filter the original data by year, and then add up the frequency totals for each name to get a grand total for the number of children born that year.  Then we divide the yearly total for James by the grand total for the year.
 
