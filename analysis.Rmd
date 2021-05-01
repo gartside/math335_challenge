@@ -30,7 +30,7 @@ names_year <- read_csv("names_year.csv")
 ```{r}
 getNameTibble <- function(x) names_year %>% filter(name==x) %>% select(c(year, Total))
 james_data <- getNameTibble("James")
-james_data %>% ggplot(aes(year, Total)) + geom_point() + labs(title="Frequency of children named James by year", x="Year", y="Yearly Total") + geom_vline(xintercept=1964, linetype='dashed', color='blue')
+james_data %>% ggplot(aes(year, Total)) + geom_point() + labs(title="Frequency of children named James by year", x="Year", y="Yearly Total") + geom_vline(xintercept=1964, linetype='dashed', color='blue') + annotate("text", x = 1969, y = 0, label = "1964", color = "blue")
 ```
 I was born in the year 1964, in which there were `r format(james1964[[1]], nsmall=1)` children born with the name James. It looks like the name James was most popular around 1950, but that might be due to the baby boom after World War II, and not because the name James was more popular around that time period. To check this, we should look at the proportion of the children named James each year instead of the frequency for each year.
 
@@ -40,7 +40,7 @@ To calculate the proportions, we filter the original data by year, and then add 
 getGrandTotal <- function(x) names_year %>% filter(year==x) %>% select(c(Total)) %>% sum()
 james_data <- james_data %>% mutate(grandTotal = (year %>% modify(function(x) getGrandTotal(x))), propGrandTotal = Total/grandTotal)
 james_data %>% ggplot(aes(year, grandTotal)) + geom_point() + labs(title="Total number of children born each year", x="Year", y="Total born")
-james_data %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named James by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=1964, linetype='dashed', color='blue')
+james_data %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named James by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=1964, linetype='dashed', color='blue')  + annotate("text", x = 1969, y = 0, label = "1964", color = "blue")
 ```
 The rise in frequencies seen in the first graph from 1910 to the early 1940s is deceptive since it coincides with the growing number of births each year, which is seen in the second graph.  From the proportions in the third graph, we see that the popularity of the name James dipped a small amount after 1910, then slowly rose through the 1930s. It was most popular between the years 1936 and 1945, and has declined in popularity since 1945.
 
@@ -58,8 +58,8 @@ brittany_data <- getNameTibble("Brittany")
 brittany_data <- brittany_data %>% mutate(grandTotal = (year %>% modify(function(x) getGrandTotal(x))), propGrandTotal = Total/grandTotal)
 brittany_data %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Brittany by year", x="Year", y="Yearly proportion")
 ```
-It looks like the popularity for the name Brittany peaked in 1990.
-We find this value using R:
+The name Brittany does not appear in the data before 1968.  It looks like the popularity for the name Brittany peaked in 1990.
+We find this directly using R:
 
 ```{r}
 maxBrittanyIndex <- brittany_data$propGrandTotal %>% which.max()
@@ -83,7 +83,7 @@ paul_data <- getNameTibble("Paul") %>% filter(year >= 1920) %>% filter(year <= 2
 combined_data <- rbind(mary_data, martha_data, peter_data, paul_data)
 combined_data %>% ggplot(aes(year, propGrandTotal, color = factor(name))) + geom_point() + labs(title="Proportion of children by year", x="Year", y="Yearly proportion") + scale_color_brewer(palette = "Set2")
 ```
-We can see that Mary was much more popular in 1920 than Martha, Paul and Peter.  The popularity of Peter has remained fairly constant, and that the proportions for Paul and Martha have decreased slowly over time.  Mary has experienced a large drop on popularity from 1920 to 2000.
+We can see that Mary was much more popular in 1920 than Martha, Paul and Peter.  The popularity of Peter has remained fairly constant, and that the proportions for Paul and Martha decreased slowly over time.  Mary  experienced a large drop on popularity from 1920 to 2000.
 
 
 ## Challenge Question Four
@@ -99,11 +99,11 @@ Here is a plot of the proportion of children named Harry over time:
 ```{r}
 harry_data <- getNameTibble("Harry")
 harry_data <- harry_data %>% mutate(propGrandTotal = Total/(year %>% modify(function(x) getGrandTotal(x))))
-harry_data %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Harry by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=2001, linetype='dashed', color='blue')
+harry_data %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Harry by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=2001, linetype='dashed', color='blue') + annotate("text", x = 2006, y = 0.001, label = "2001", color = "blue")
 ```
 There does not seem to be an increase in the name Harry due to the release of the Harry Potter movies.  Zooming in to the years immediately surrounding the releases of the Harry Potter movies gives the following graph:
 
 ```{r}
-harry_data %>% filter(year > 1985) %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Harry by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=2001, linetype='dashed', color='blue')
+harry_data %>% filter(year > 1985) %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Harry by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=2001, linetype='dashed', color='blue')  + annotate("text", x = 2003, y = 0.0001, label = "2001", color = "blue")
 ```
 From this view, it seems that the decline in Harry was paused from 2001 to 2007, but that the decline then continued.  It is not clear if this pause in the decline is due to the release of the Harry Potter movies.
