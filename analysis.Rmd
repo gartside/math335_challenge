@@ -62,7 +62,7 @@ We find this value using R:
 maxBrittanyIndex <- brittany_tibble$propGrandTotal %>% which.max()
 maxBrittanyYear <- brittany_tibble$year[maxBrittanyIndex]
 ```
-Using R, the year that Brittany was most popular is `r maxBrittanyYear`, which would make the person `r 2021 - maxBrittanyYear` years old. Based on the graph, I would not guess the birth year to be before 1982 nor after 2001, so I would guess any ages below `r 2021 - 2001` and I would not guess any ages above `r 2021 - 1982`.
+Using R, the year that Brittany was most popular is `r maxBrittanyYear`, which would make the person `r 2021 - maxBrittanyYear` years old. Based on the graph, I would not guess the birth year to be before 1982 nor after 2001, so I would not guess any ages below `r 2021 - 2001` and I would not guess any ages above `r 2021 - 1982`.
 
 ## Challenge Question Three
 
