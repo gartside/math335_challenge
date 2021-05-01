@@ -1,0 +1,55 @@
+---
+title: "Math 335 Challenge Problem"
+output: html_notebook
+---
+
+# Background
+
+Early in prehistory, some descriptive names began to be used again and again until they formed a name pool for a particular culture. Parents would choose names from the pool of existing names rather than invent new ones for their children.
+
+With the rise of Christianity, certain trends in naming practices manifested. Christians were encouraged to name their children after saints and martyrs of the church. These early Christian names can be found in many cultures today, in various forms. These were spread by early missionaries throughout the Mediterranean basin and Europe.
+
+By the Middle Ages, the Christian influence on naming practices was pervasive. Each culture had its pool of names, which were a combination of native names and early Christian names that had been in the language long enough to be considered native.
+
+# Challenge Questions
+
+## Challenge Question One
+
+How does your name at your birth year compare to its use historically?
+
+First we plot the number of children that were named James for each year in the data.
+
+```{r setup, message = FALSE}
+library(tidyverse)
+```
+```{r read_data, message = FALSE}
+#names_year <- read_csv("names_year.csv", col_types = list(year = col_date()))
+names_year <- read_csv("names_year.csv")
+```
+```{r}
+james_tibble <- (names_year %>% filter(name=="James") %>% select(c(year, Total)))
+james_tibble %>% ggplot(aes(year, Total)) + geom_point() + labs(title="Frequency of children named James by year", x="Year", y="Yearly Total") + geom_vline(xintercept=1964, linetype='dashed', color='blue')
+```
+I was born in the year 1964, in which there were `r format(james1964[[1]], nsmall=1)` children born with the name James. It looks like the name James was most popular around 1950, but that might be due to the baby boom after World War II, and not because the name James was more popular around that time period. To check this, we should look at the proportion of the children named James each year instead of the frequency for each year.
+
+To calculate the proportions, we subset the original data frame by year, and then add up the frequency totals for each name to get a grand total for the number of children born that year.  Then we divide the yearly total for James by the grand total for the year.
+
+```{r}
+getGrandTotal <- function(x) names_year %>% filter(year==x) %>% select(c(Total)) %>% sum()
+james_tibble <- james_tibble %>% mutate(grandTotal = (year %>% modify(function(x) getGrandTotal(x))), propGrandTotal = Total/grandTotal)
+james_tibble %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named James by year", x="Year", y="Yearly proportion") + geom_vline(xintercept=1964, linetype='dashed', color='blue')
+```
+The rise in popularity seen in the first graph from 1910 to the early 1940s is deceptive since it does not take into account the growing number of births each year.  From the second graph, we see that the popularity of the name James was did not vary much between 1910 and the early 1930s, and that it most popular between the years 1936 and 1945,
+and has declined in popularity since 1945.
+
+## Challenge Question Two
+
+If you talked to someone named Brittany on the phone, what is your guess of their age? What ages would you not guess?
+
+## Challenge Question Three
+
+Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names.
+
+## Challenge Question Four
+
+Think of a unique name from a famous movie. Plot that name and see how increases line up with the movie release.
