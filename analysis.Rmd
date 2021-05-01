@@ -17,6 +17,8 @@ By the Middle Ages, the Christian influence on naming practices was pervasive. E
 
 How does your name at your birth year compare to its use historically?
 
+### Response
+
 First we plot the number of children that were named James for each year in the data.
 
 ```{r setup, message = FALSE}
@@ -47,11 +49,13 @@ The rise in popularity seen in the first graph from 1910 to the early 1940s is d
 
 If you talked to someone named Brittany on the phone, what is your guess of their age? What ages would you not guess?
 
+
+### Response:
+
 To answer this question, we calculate the proportion of births that were named Brittany each year.
 
 ```{r}
 brittany_tibble <- getNameTibble("Brittany")
-brittany_tibble
 brittany_tibble <- brittany_tibble %>% mutate(grandTotal = (year %>% modify(function(x) getGrandTotal(x))), propGrandTotal = Total/grandTotal)
 brittany_tibble %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Brittany by year", x="Year", y="Yearly proportion")
 ```
@@ -67,6 +71,21 @@ Using R, the year that Brittany was most popular is `r maxBrittanyYear`, which w
 ## Challenge Question Three
 
 Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names.
+
+### Response:
+
+We combine the data for the names Mary, Martha, Peter, and Paul in one table:
+
+```{r}
+mary_tibble <- getNameTibble("Mary") %>% filter(year >= 1920) %>% filter(year <= 2000) %>% mutate(name = "Mary") %>% mutate(propGrandTotal = Total/(year %>% modify(function(x) getGrandTotal(x))))
+martha_tibble <- getNameTibble("Martha") %>% filter(year >= 1920) %>% filter(year <= 2000) %>% mutate(name = "Martha") %>% mutate(propGrandTotal = Total/(year %>% modify(function(x) getGrandTotal(x))))
+peter_tibble <- getNameTibble("Peter") %>% filter(year >= 1920) %>% filter(year <= 2000) %>% mutate(name = "Peter") %>% mutate(propGrandTotal = Total/(year %>% modify(function(x) getGrandTotal(x))))
+paul_tibble <- getNameTibble("Paul") %>% filter(year >= 1920) %>% filter(year <= 2000) %>% mutate(name = "Paul") %>% mutate(propGrandTotal = Total/(year %>% modify(function(x) getGrandTotal(x))))
+combined_data <- rbind(mary_tibble, martha_tibble, peter_tibble, paul_tibble)
+combined_data %>% ggplot(aes(year, propGrandTotal, color = factor(name))) + geom_point() + labs(title="Proportion of children by year", x="Year", y="Yearly proportion") + scale_color_brewer(palette = "Set2")
+```
+We can see that Mary was much more popular in 1920 than Martha, Paul and Peter.  The popularity of Peter has remained fairly constant, and that the popularities of Paul and Martha have decreased slowly over time.  Mary has experienced a large drop on popularity from 1920 to 2000.
+
 
 ## Challenge Question Four
 
