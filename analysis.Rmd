@@ -27,7 +27,8 @@ library(tidyverse)
 names_year <- read_csv("names_year.csv")
 ```
 ```{r}
-james_tibble <- (names_year %>% filter(name=="James") %>% select(c(year, Total)))
+getNameTibble <- function(x) names_year %>% filter(name==x) %>% select(c(year, Total))
+james_tibble <- getNameTibble("James")
 james_tibble %>% ggplot(aes(year, Total)) + geom_point() + labs(title="Frequency of children named James by year", x="Year", y="Yearly Total") + geom_vline(xintercept=1964, linetype='dashed', color='blue')
 ```
 I was born in the year 1964, in which there were `r format(james1964[[1]], nsmall=1)` children born with the name James. It looks like the name James was most popular around 1950, but that might be due to the baby boom after World War II, and not because the name James was more popular around that time period. To check this, we should look at the proportion of the children named James each year instead of the frequency for each year.
@@ -46,6 +47,23 @@ The rise in popularity seen in the first graph from 1910 to the early 1940s is d
 
 If you talked to someone named Brittany on the phone, what is your guess of their age? What ages would you not guess?
 
+To answer this question, we calculate the proportion of births that were named Brittany each year.
+
+```{r}
+brittany_tibble <- getNameTibble("Brittany")
+brittany_tibble
+brittany_tibble <- brittany_tibble %>% mutate(grandTotal = (year %>% modify(function(x) getGrandTotal(x))), propGrandTotal = Total/grandTotal)
+brittany_tibble %>% ggplot(aes(year, propGrandTotal)) + geom_point() + labs(title="Proportion of children named Brittany by year", x="Year", y="Yearly proportion")
+```
+It looks like the popularity for the name Brittany peaked in 1990.
+We find this value using R:
+
+```{r}
+maxBrittanyIndex <- brittany_tibble$propGrandTotal %>% which.max()
+maxBrittanyYear <- brittany_tibble$year[maxBrittanyIndex]
+```
+Using R, the year that Brittany was most popular is `r maxBrittanyYear`, which would make the person `r 2021 - maxBrittanyYear` years old. Based on the graph, I would not guess the birth year to be before 1982 nor after 2001, so I would guess any ages below `r 2021 - 2001` and I would not guess any ages above `r 2021 - 1982`.
+
 ## Challenge Question Three
 
 Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names.
@@ -53,3 +71,4 @@ Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare
 ## Challenge Question Four
 
 Think of a unique name from a famous movie. Plot that name and see how increases line up with the movie release.
+
